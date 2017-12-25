@@ -1,0 +1,13 @@
+{
+	"dependencies": {
+		"@types/html-entities": "^1.2.16",
+		"@types/node": "^8.5.2",
+		"@types/request": "^2.0.9",
+		"@types/request-promise": "^4.1.39",
+		"@types/xmldom": "^0.1.29",
+		"html-entities": "^1.2.1",
+		"request": "^2.83.0",
+		"request-promise": "^4.2.2",
+		"xmldom": "^0.1.27"
+	}
+}
