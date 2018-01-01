@@ -61,6 +61,7 @@ export async function convert(input: string) {
 					console.log('bad sep', sep, 'expected', rem.substr(0, 3) + '...');
 					const widx = rem.indexOf(sep);
 					if (widx > 0) eat(widx);
+					else if (!rem.match(/\w/)) eat(rem.length);
 					else continue;
 				}
 				se.appendChild(xml.createTextNode(sep));
@@ -75,6 +76,7 @@ export async function convert(input: string) {
 					console.log('bad word', word, 'expected', rem.substr(0, 3) + '...');
 					const widx = rem.indexOf(word);
 					if (widx > 0) eat(widx);
+					else if (!rem.match(/\w/)) eat(rem.length);
 					else continue;
 				}
 				
