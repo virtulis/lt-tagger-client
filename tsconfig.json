@@ -6,8 +6,8 @@
 		"strict": true,
 		"moduleResolution": "node"
 	},
-	"files": [
+	"include": [
 		"./*.ts",
-		"./src/*.ts"
+		"./src/**/*.ts"
 	]
 }

@@ -1,4 +1,6 @@
 {
+	"name": "tekstynas",
+	"private": true,
 	"dependencies": {
 		"@types/chalk": "^2.2.0",
 		"@types/html-entities": "^1.2.16",
@@ -16,5 +18,8 @@
 		"request-promise": "^4.2.2",
 		"source-map-support": "^0.5.5",
 		"xmldom": "^0.1.27"
+	},
+	"devDependencies": {
+		"typescript": "^2.8.3"
 	}
 }
