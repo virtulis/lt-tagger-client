@@ -1,26 +1,21 @@
-export const attributes: { [key: string]: [string, string] } = {
+export const attributes: { [key: string]: [string | null, string | null] } = {
 	
-	// lt
-	"KLC tag": ["RNC tag", null],
 	"dkt.": ["S", null],
 	"bdv.": ["A", null],
-	"sktv.": ["ADJ", null],
+	"sktv.": [null, null],
 	"įv.": ["PRO", null],
 	"vksm.": ["V", null],
 	"prv.": ["ADV", null],
 	"jst.": ["INTJ", null],
 	"išt.": ["INTJ2", null],
-	"dll.": ["partcp", null],
+	"dll.": ["PART", null],
 	"prl.": ["PR", null],
 	"jng.": ["CONJ", null],
 	"akronim.": ["abbr", null],
 	"sutr.": ["abbr", null],
 	"tikr.": ["S,propn", null],
 	"tikr. dkt.": ["S,propn", null],
-	
-	
-	
-	// rt, -> V(lt)
+
 	"bendr.": ["V", "inf"],
 	"dlv.": ["V", "partcp"],
 	"pad.": ["V", "partcp,ger,ssubj"],
@@ -29,8 +24,7 @@ export const attributes: { [key: string]: [string, string] } = {
 	"tiesiog. n.": ["V", "indic"],
 	"liep. n.": ["V", "imper"],
 	"tar. n.": ["V", "cond"],
-	
-	
+
 	"kiek.": ["NUM,card", null],
 	"kelint.": ["ANUM,ord", null],
 	"daugin.": ["NUM,mult", null],
@@ -54,6 +48,7 @@ export const attributes: { [key: string]: [string, string] } = {
 	"nelygin. l.": [null, "pos"],
 	"aukšt. l.": [null, "comp"],
 	"aukšč. l.": [null, "super"],
+	"aukštėl. l.": [null, "comp,dim"],
 	"mot. g.": [null, "f"],
 	"vyr. g.": [null, "m"],
 	"bev. g.": [null, "n"],
@@ -77,6 +72,7 @@ export const attributes: { [key: string]: [string, string] } = {
 	"rom. sk.": ["ciph", null],
 	"idprl.": ["PR,fixed", null],
 	"idjngt.": ["CONJ,fixed", null],
+	"idjng.": ["CONJ,fixed", null],
 	"idPS": ["PS,fixed", null],
 	
 	"teig.": [null, null],
