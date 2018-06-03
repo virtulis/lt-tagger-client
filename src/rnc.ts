@@ -70,57 +70,63 @@ export async function processRNC(xmls: string, options: RNCOptions, ui: UserInte
 				continue;
 			}
 
-			const ttlen = ttxt.length;
-			let found = false;
-			let flen = 0;
-			let i = cstri;
-			let l = cstr.length - ttlen + 1;
-			for (; cse; i++) {
+			const ttws = ttxt.split(/\s+/g);
+			for (let ttwi = 0; ttwi < ttws.length; ttwi++) {
 
-				if (i >= l) {
-					console.log(chalk.yellow('Remained:'), cstr.substr(cstri));
-					next();
-					if (!cse) break;
-					i = cstri; // 0
-					l = cstr.length - ttlen + 1;
+				const ttw = ttws[ttwi];
+				const ttlen = ttw.length;
+				let found = false;
+				let flen = 0;
+				let i = cstri;
+				let l = cstr.length - ttlen + 1;
+				for (; cse; i++) {
+
+					if (i >= l) {
+						console.log(chalk.yellow('Remained:'), cstr.substr(cstri));
+						next();
+						if (!cse) break;
+						i = cstri; // 0
+						l = cstr.length - ttlen + 1;
+					}
+
+					const sub = cstr.substr(i, ttlen);
+
+					if (sub == ttw) {
+						found = true;
+						flen = sub.length;
+						break;
+					}
+
+					const map = charmap[sub[0]];
+					if (map && map[mapi] == ttw) {
+						found = true;
+						const last = ++mapi == map.length;
+						flen = last ? 1 : 0;
+						if (last) mapi = 0;
+						break;
+					}
+
+					mapi = 0;
+
 				}
 
-				const sub = cstr.substr(i, ttlen);
-
-				if (sub == ttxt) {
-					found = true;
-					flen = sub.length;
-					break;
+				if (!found) {
+					console.log(chalk.red('Failed to match:'), tag);
+					console.log('To:', cstr);
+					console.log('At:', cstri, '=', cstr.substr(cstri, 10));
+					throw new Error('Tag mapping failed');
 				}
 
-				const map = charmap[sub[0]];
-				if (map && map[mapi] == ttxt) {
-					found = true;
-					const last = ++mapi == map.length;
-					flen = last ? 1 : 0;
-					if (last) mapi = 0;
-					break;
+				if (i > cstri && !ttwi) {
+					const miss = cstr.substring(cstri, i);
+					if (!miss.match(/^\s+$/)) console.log('Jumped over:', miss);
+					ccs.push(xml.createTextNode(miss));
+					hadSpace = false;
 				}
 
-				mapi = 0;
+				cstri = i + flen;
 
 			}
-
-			if (!found) {
-				console.log(chalk.red('Failed to match:'), tag);
-				console.log('To:', cstr);
-				console.log('At:', cstri, '=', cstr.substr(cstri, 10));
-				throw new Error('Tag mapping failed');
-			}
-
-			if (i > cstri) {
-				const miss = cstr.substring(cstri, i);
-				console.log('Jumped over:', miss);
-				ccs.push(xml.createTextNode(miss));
-				hadSpace = false;
-			}
-
-			cstri = i + flen;
 
 			if (tag.type == 'sep' || tag.type == 'number') {
 				ccs.push(xml.createTextNode(ttxt));
