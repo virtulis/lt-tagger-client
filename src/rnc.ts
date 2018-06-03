@@ -56,7 +56,7 @@ export async function processRNC(xmls: string, options: RNCOptions, ui: UserInte
 			if (!cse || cstri >= cstr.length) next();
 
 			if (tag.type == 'space') {
-				while (cstr[cstri].match(/\s/)) cstri++;
+				while (cstri < cstr.length && cstr[cstri].match(/\s/)) cstri++;
 				if (hadSpace) continue;
 				ccs.push(xml.createTextNode(' '));
 				hadSpace = true;
