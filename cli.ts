@@ -9,13 +9,19 @@ import chalk from 'chalk';
 
 import { processRNC } from './src/rnc';
 import { existsSync } from 'fs';
+import { grep, parseGrepOptions } from './src/grep';
 
 const usage = `Usage:
 
 	node cli rnc [opts] in.xml outdir|out.xml
 		-s|--single -> no ambigs
 		-S|--salvage -> save in case of error
-		--from N -> start at sentence N (eg after salvage)
+		--from=N -> start at sentence N (eg after salvage)
+		
+	node cli grep [opts] in.xml outdir|out.xml
+	filters:
+		--unparsed-words -> dump unparsed words (no sentence structure)
+		--with-unparsed-words -> dump sentences with unparsed words
 	
 `;
 
@@ -26,7 +32,7 @@ export interface UserInterface {
 (async function cli() {
 	
 	const mm = minimist(process.argv.slice(2), {
-		boolean: ['single', 's', 'S', 'salvage'],
+		boolean: true,
 	});
 
 	if (!mm._.length || mm.help || mm.h || mm['?']) {
@@ -36,9 +42,7 @@ export interface UserInterface {
 
 	const [cmd, ifn, ofn] = mm._;
 
-	const single = mm.single || mm.s;
 	const salvage = mm.salvage || mm.S;
-	const from = isFinite(parseInt(mm.from)) ? parseInt(mm.from) : 0;
 
 	const eofn = (fs.existsSync(ofn) && fs.statSync(ofn).isDirectory()) ? ofn + '/'  + path.basename(ifn) : ofn;
 	const eifn = salvage && existsSync(eofn) ? eofn : ifn;
@@ -54,17 +58,38 @@ export interface UserInterface {
 		ui.cancel = true;
 	});
 
+	const done = () => process.exit(ui.cancel ? os.constants.signals.SIGINT : 0);
+
 	if (cmd == 'rnc') {
+
+		const single = mm.single || mm.s;
+		const from = isFinite(parseInt(mm.from)) ? parseInt(mm.from) : 0;
+
 		if (eifn == eofn) console.log(chalk.yellow('Salvaging:', eofn));
+
 		const ixml = fs.readFileSync(eifn, { encoding: 'utf-8' });
 		const rxml = await processRNC(ixml, { single, salvage, from }, ui);
 		if (rxml) fs.writeFileSync(eofn, rxml);
-	}
-	else {
-		console.log(chalk.red('Unknown command'), cmd);
-		console.log('\n' + usage);
+
+		return done();
+
 	}
 
-	process.exit(ui.cancel ? os.constants.signals.SIGINT : 0);
+	if (cmd == 'grep') {
+
+		const opts = parseGrepOptions(mm);
+
+		const ixml = fs.readFileSync(eifn, { encoding: 'utf-8' });
+		const rxml = await grep(ixml, parseGrepOptions(mm), ui);
+		if (rxml) fs.writeFileSync(eofn, rxml);
+
+		return done();
+
+	}
+
+	console.log(chalk.red('Unknown command'), cmd);
+	console.log('\n' + usage);
+
+	process.exit(1);
 
 })();
