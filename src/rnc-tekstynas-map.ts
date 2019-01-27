@@ -1,4 +1,4 @@
-export const attributes: { [key: string]: [string | null, string | null] } = {
+export const tekstynasRNCMap: { [key: string]: [string | null, string | null] } = {
 	
 	"dkt.": ["S", null],
 	"bdv.": ["A", null],

@@ -1,4 +1,4 @@
-export const charmap: { [key: string]: string } = {
+export const tekstynasCharmap: { [key: string]: string } = {
 	"«": "\"",
 	"­": "-",
 	"´": "'",
@@ -95,4 +95,4 @@ export const charmap: { [key: string]: string } = {
 	"…": "..."
 };
 
-export const mapChars = (str: string) => Array.from(str).map(c => charmap[c] || c);
+export const mapTekstynasChars = (str: string) => Array.from(str).map(c => tekstynasCharmap[c] || c);
