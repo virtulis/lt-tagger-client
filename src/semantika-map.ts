@@ -323,12 +323,12 @@ export const semantikaMap = <Record<string, SemantikaTagMap>> {
 		9: {
 			y: {
 				mdComment: "yes",
+				rncRight: "neg",
 				udKey: "Polarity",
 				udValue: "Neg"
 			},
 			n: {
 				mdComment: "no",
-				rncRight: "neg",
 				udKey: "Polarity",
 				udValue: "Yes"
 			}
