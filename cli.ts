@@ -140,4 +140,4 @@ function getEffectiveFilenames([ifn, ofn]: string[], salvage = false) {
 
 	process.exit(1);
 
-})();
+})().catch(e => console.error(e));
