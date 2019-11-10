@@ -43,7 +43,12 @@ export class SemantikaTagger implements Tagger {
 		const res = JSON.parse(json);
 
 		const tags: SemantikaTag[] = [];
-
+		
+		if (!res.lex) {
+			console.log('Invalid response from Semantika', res);
+			return;
+		}
+		
 		const segs = res.lex.seg as [number, number][];
 		const msds = res.morphology.msd as [string, string][][];
 
@@ -90,7 +95,9 @@ export class SemantikaTagger implements Tagger {
 		};
 
 		const pushText = (s: string) => ccs.push(xml.createTextNode(s));
-
+		
+		if (!tags) return;
+		
 		for (let tag of tags) {
 
 			if (tag.start + tag.length >= nstpos) {
@@ -166,17 +173,25 @@ export class SemantikaTagger implements Tagger {
 		const lines = input.split('\n').map(s => s.trim()).filter(s => !!s);
 		for (let line of lines) {
 			
-			console.log(line);
-			const res = await this.fetchTags(line);
+			const tags = await this.fetchTags(line);
 			
 			const para = xml.createElement('para');
 			para.setAttribute('id', String(pid++));
 			
 			const se = xml.createElement('se');
 			se.setAttribute('lang', 'lt');
+
+			para.appendChild(se);
+			body.appendChild(xml.createTextNode('\n'));
+			body.appendChild(para);
+			
+			if (!tags) {
+				se.appendChild(xml.createTextNode(line));
+				continue;
+			}
 			
 			let rl = line;
-			for (let tag of res) {
+			for (let tag of tags) {
 				
 				const idx = rl.indexOf(tag.content);
 				if (idx < 0) throw new Error('Content mismatch');
@@ -217,10 +232,6 @@ export class SemantikaTagger implements Tagger {
 				se.appendChild(w);
 				
 			}
-			
-			para.appendChild(se);
-			body.appendChild(xml.createTextNode('\n'));
-			body.appendChild(para);
 			
 		}
 
