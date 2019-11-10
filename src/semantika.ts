@@ -2,6 +2,7 @@ import * as request from 'request-promise';
 
 import { semantikaMap, SemantikaTagMap, SemantikaTagValue } from './semantika-map';
 import { Tagger } from './util';
+import * as xmldom from 'xmldom';
 
 export interface SemantikaOptions {
 }
@@ -151,6 +152,82 @@ export class SemantikaTagger implements Tagger {
 
 		save();
 
+	}
+
+	async tagSimpleSentencesWithRNC(input: string) {
+
+		const parser = new xmldom.DOMParser();
+		const xml = parser.parseFromString(`<?xml version="1.0" encoding="utf-8"?><html><head></head><body></body></html>`);
+		const doc = xml.documentElement;
+		const body = doc.childNodes[1];
+		
+		let pid = 0;
+		
+		const lines = input.split('\n').map(s => s.trim()).filter(s => !!s);
+		for (let line of lines) {
+			
+			console.log(line);
+			const res = await this.fetchTags(line);
+			
+			const para = xml.createElement('para');
+			para.setAttribute('id', String(pid++));
+			
+			const se = xml.createElement('se');
+			se.setAttribute('lang', 'lt');
+			
+			let rl = line;
+			for (let tag of res) {
+				
+				const idx = rl.indexOf(tag.content);
+				if (idx < 0) throw new Error('Content mismatch');
+				const wsp = rl.slice(0, idx);
+				rl = rl.slice(idx + tag.content.length);
+				
+				if (wsp) se.appendChild(xml.createTextNode(wsp));
+
+				if (tag.variants.length == 1 && tag.variants[0].properties[0] == 'T') { // punct
+					se.appendChild(xml.createTextNode(tag.content));
+					continue;
+				}
+
+				const w = xml.createElement('w');
+				
+				for (let vtag of tag.variants) {
+
+					const left = {} as Record<string, true>;
+					const right = {} as Record<string, true>;
+
+					function add(from: string | undefined, to: Record<string, true>) {
+						if (from && from.length) from.split(',').forEach(t => to[t] = true);
+					}
+
+					for (let mtag of this.parseDLKT(vtag.properties, tag)) {
+						add(mtag.rncLeft, left);
+						add(mtag.rncRight, right);
+					}
+
+					const ana = xml.createElement('ana');
+					ana.setAttribute('lex', vtag.lemma);
+					ana.setAttribute('gr', Object.keys(left).join(',') + '=' + Object.keys(right).join(','));
+					w.appendChild(ana);
+
+				}
+
+				w.appendChild(xml.createTextNode(tag.content));
+				se.appendChild(w);
+				
+			}
+			
+			para.appendChild(se);
+			body.appendChild(xml.createTextNode('\n'));
+			body.appendChild(para);
+			
+		}
+
+		body.appendChild(xml.createTextNode('\n'));
+		
+		return xml;
+		
 	}
 
 	parseDLKT(dlkt: string, src?: SemantikaTag) {

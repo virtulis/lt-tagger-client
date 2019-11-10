@@ -31,6 +31,8 @@ const usage = `${chalk.bold('Usage:')}
 		--unparsed-words -> dump unparsed words (no sentence structure)
 		--with-unparsed-words -> dump sentences with unparsed words
 		
+	${cuteWords('node cli text', 'in.txt out.xml')}
+		
 ${chalk.bold('Taggers:')}
 
 	tekstynas
@@ -118,6 +120,19 @@ function getEffectiveFilenames([ifn, ofn]: string[], salvage = false) {
 
 		return done();
 
+	}
+	
+	if (cmd == 'text') {
+
+		const [eifn, eofn] = getEffectiveFilenames(mm._.slice(1));
+		const itxt = fs.readFileSync(eifn, { encoding: 'utf-8' });
+		const tagger = new SemantikaTagger({});
+		
+		const rxml = await tagger.tagSimpleSentencesWithRNC(itxt);
+		if (rxml) fs.writeFileSync(eofn, rxml);
+		
+		return done();
+		
 	}
 
 	console.log(chalk.red('Unknown command'), cmd);
