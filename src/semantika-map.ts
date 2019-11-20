@@ -79,7 +79,7 @@ export const semantikaMap = <Record<string, SemantikaTagMap>> {
 			},
 			p: {
 				mdComment: "proper",
-				rncLeft: "S, propn",
+				rncLeft: "S,propn",
 				udPOS: "PROPN"
 			}
 		},
