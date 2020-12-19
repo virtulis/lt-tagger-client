@@ -1,4 +1,4 @@
-import * as request from 'request-promise';
+import request from 'request-promise';
 
 import { semantikaMap, SemantikaTagMap, SemantikaTagValue } from './semantika-map';
 import { Tagger } from './util';
@@ -28,7 +28,7 @@ export class SemantikaTagger implements Tagger {
 
 	async fetchTags(str: string) {
 
-		const json = await request('http://semantika.lt/SyntaticAndSemanticAnalysis/Analysis/Analyze', {
+		const json = await request('https://semantika.lt/SyntaticAndSemanticAnalysis/Analysis/Analyze', {
 			method: 'POST',
 			form: {
 				Text: str,

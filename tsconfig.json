@@ -4,7 +4,9 @@
 		"target": "esnext",
 		"sourceMap": true,
 		"strict": true,
-		"moduleResolution": "node"
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true
 	},
 	"include": [
 		"./*.ts",

@@ -4,7 +4,7 @@ sms.install();
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import * as minimist from 'minimist';
+import minimist from 'minimist';
 import chalk from 'chalk';
 
 import { processRNC } from './src/rnc';
@@ -32,7 +32,7 @@ const usage = `${chalk.bold('Usage:')}
 		--with-unparsed-words -> dump sentences with unparsed words
 		
 	${cuteWords('node cli text', 'in.txt out.xml')}
-		
+	
 ${chalk.bold('Taggers:')}
 
 	tekstynas
@@ -116,7 +116,7 @@ function getEffectiveFilenames([ifn, ofn]: string[], salvage = false) {
 
 		const ixml = fs.readFileSync(eifn, { encoding: 'utf-8' });
 		const rxml = await grep(ixml, parseGrepOptions(mm), ui);
-		if (rxml) fs.writeFileSync(eofn, rxml);
+		if (rxml) fs.writeFileSync(eofn, String(rxml));
 
 		return done();
 
@@ -129,7 +129,7 @@ function getEffectiveFilenames([ifn, ofn]: string[], salvage = false) {
 		const tagger = new SemantikaTagger({});
 		
 		const rxml = await tagger.tagSimpleSentencesWithRNC(itxt);
-		if (rxml) fs.writeFileSync(eofn, rxml);
+		if (rxml) fs.writeFileSync(eofn, String(rxml));
 		
 		return done();
 		

@@ -1,4 +1,4 @@
-import * as request from 'request-promise';
+import request from 'request-promise';
 import * as entities from 'html-entities';
 import { tekstynasCharmap, mapTekstynasChars } from './tekstynas-charmap';
 import chalk from 'chalk';
@@ -30,7 +30,7 @@ export class TekstynasTagger implements Tagger {
 
 	async fetchTags(str: string) {
 
-		const rbody = await request('http://donelaitis.vdu.lt/main_helper.php?id=4&nr=7_2', {
+		const rbody = await request('https://donelaitis.vdu.lt/main_helper.php?id=4&nr=7_2', {
 			method: 'POST',
 			form: {
 				tekstas: str,
