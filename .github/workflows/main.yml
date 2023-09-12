@@ -1,0 +1,9 @@
+name: what do
+on: [push]
+jobs:
+  idk:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm install
+      - run: npx tsc
+      
