@@ -18,7 +18,7 @@
 		"chalk": "^4.1.0",
 		"dayjs": "^1.9.7",
 		"html-entities": "^1.4.0",
-		"minimist": "^1.2.5",
+		"minimist": "^1.2.6",
 		"request": "^2.88.2",
 		"request-promise": "^4.2.6",
 		"source-map-support": "^0.5.19",
